@@ -1,6 +1,8 @@
 .data
+input_string:
+    .byte 50,49,51,52,53,54,55,49,49,49,49,49,49,49
 state:
-    .byte 1,0,2,3,4,5,6
+    .byte 0,0,0,0,0,0,0
     .byte 0,0,0,0,0,0,0
 result:
     .byte 0,0,0,0,0,0,0
@@ -5866,6 +5868,29 @@ main:
     sw s5, 24(sp) #h -> move
     sw s6, 28(sp) #f ->face
     
+    la t0, input_string
+    la t1, state
+    li t2, 0 #i
+    li t6, 7
+string_loop:
+    bge t2, t6, string_done
+    #permutation
+    add t3, t0, t2
+    lbu t3, 0(t3)
+    addi t3, t3, -49
+    add t4, t1, t2
+    sb t3, 0(t4)
+    #orientation
+    addi t3, t2, 7
+    add t3, t3, t0
+    lbu t3, 0(t3)
+    addi t3, t3, -49
+    addi t4, t2, 7
+    add t4, t1, t4
+    sb t3, 0(t4)
+    addi t2, t2, 1
+    j string_loop
+string_done:    
     la a0, state
     jal ra, permutation_rank
     la t0, perm_rank_stack
@@ -6288,3 +6313,4 @@ loop:
 done_o:
     mv a0, t0
     ret
+    
